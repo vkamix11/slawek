@@ -1,8 +1,11 @@
-<!DOCTYPE html><html lang="pl">
+<!DOCTYPE html>
+<html lang="pl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ImSoSorry Custom Player</title>  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">  <style>
+  <title>Slawekk_ Custom Player</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+  <style>
     html, body {
       margin: 0;
       padding: 0;
@@ -114,20 +117,27 @@
       width: 25%;
       height: 70%;
     }
-  </style></head><body>
+  </style>
+</head>
+<body>
   <header>
-    <h1>ImSoSorry Live</h1>
+    <h1>Slawekk_ Live</h1>
     <button id="editBtn">✏️ Edytor</button>
-  </header>  <div class="container">
+  </header>
+
+  <div class="container">
     <div class="window" id="playerWin">
       <div class="title-box">🎥 Stream</div>
-      <iframe src="https://player.twitch.tv/?channel=imsosorrytv&parent=vkamix11.github.io" allowfullscreen></iframe>
-    </div><div class="window" id="chatWin">
-  <div class="title-box">💬 Chat</div>
-  <iframe src="https://www.twitch.tv/embed/imsosorrytv/chat?parent=vkamix11.github.io"></iframe>
-</div>
+      <iframe src="https://player.twitch.tv/?channel=slawekk_&parent=vkamix11.github.io" allowfullscreen></iframe>
+    </div>
 
-  </div>  <script>
+    <div class="window" id="chatWin">
+      <div class="title-box">💬 Chat</div>
+      <iframe src="https://www.twitch.tv/embed/slawekk_/chat?parent=vkamix11.github.io"></iframe>
+    </div>
+  </div>
+
+  <script>
     const editBtn = document.getElementById("editBtn");
     let editMode = false;
 
@@ -196,11 +206,11 @@
           height: win.style.height
         };
       });
-      localStorage.setItem("imsosorryLayout", JSON.stringify(layout));
+      localStorage.setItem("slawekkLayout", JSON.stringify(layout));
     }
 
     window.addEventListener("load", () => {
-      const saved = localStorage.getItem("imsosorryLayout");
+      const saved = localStorage.getItem("slawekkLayout");
       if (saved) {
         const layout = JSON.parse(saved);
         for (let id in layout) {
@@ -214,5 +224,6 @@
         }
       }
     });
-  </script></body>
+  </script>
+</body>
 </html>
