@@ -1,0 +1,218 @@
+<!DOCTYPE html><html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ImSoSorry Custom Player</title>  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+      background: radial-gradient(circle at center, #141416 0%, #0c0c0e 100%);
+      font-family: "Poppins", sans-serif;
+      color: #fff;
+    }
+
+    body::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: rgba(20,20,25,0.85);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+      z-index: 5;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.6);
+      backdrop-filter: blur(8px);
+    }
+
+    header h1 {
+      font-size: 26px;
+      font-weight: 700;
+      text-shadow: 0 0 10px #6e57ff;
+      letter-spacing: 2px;
+    }
+
+    #editBtn {
+      background: #6e57ff;
+      border: none;
+      color: white;
+      font-size: 20px;
+      border-radius: 10px;
+      padding: 8px 16px;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(110, 87, 255, 0.5);
+      transition: 0.3s;
+    }
+    #editBtn:hover {
+      background: #8a72ff;
+      transform: scale(1.05);
+    }
+
+    .container {
+      position: relative;
+      top: 70px;
+      height: calc(100vh - 80px);
+      width: 100%;
+    }
+
+    .window {
+      position: absolute;
+      background: #1b1c20;
+      border: 1px solid #2a2b31;
+      border-radius: 12px;
+      box-shadow: 0 0 25px rgba(0,0,0,0.6);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      z-index: 1;
+      resize: none;
+      pointer-events: auto;
+    }
+
+    .title-box {
+      font-size: 18px;
+      text-align: center;
+      padding: 6px;
+      background: #2a2b31;
+      user-select: none;
+      color: #b6b6ff;
+      border-bottom: 1px solid #3a3b41;
+      cursor: default;
+    }
+
+    iframe {
+      flex: 1;
+      border: none;
+      width: 100%;
+      height: 100%;
+    }
+
+    #playerWin {
+      left: 5%;
+      top: 5%;
+      width: 60%;
+      height: 80%;
+    }
+    #chatWin {
+      right: 5%;
+      top: 10%;
+      width: 25%;
+      height: 70%;
+    }
+  </style></head><body>
+  <header>
+    <h1>ImSoSorry Live</h1>
+    <button id="editBtn">✏️ Edytor</button>
+  </header>  <div class="container">
+    <div class="window" id="playerWin">
+      <div class="title-box">🎥 Stream</div>
+      <iframe src="https://player.twitch.tv/?channel=imsosorrytv&parent=vkamix11.github.io" allowfullscreen></iframe>
+    </div><div class="window" id="chatWin">
+  <div class="title-box">💬 Chat</div>
+  <iframe src="https://www.twitch.tv/embed/imsosorrytv/chat?parent=vkamix11.github.io"></iframe>
+</div>
+
+  </div>  <script>
+    const editBtn = document.getElementById("editBtn");
+    let editMode = false;
+
+    const windows = document.querySelectorAll(".window");
+
+    function disableEditing() {
+      windows.forEach(win => {
+        win.style.resize = "none";
+        win.querySelector(".title-box").style.cursor = "default";
+      });
+    }
+
+    function enableEditing() {
+      windows.forEach(win => {
+        win.style.resize = "both";
+        win.querySelector(".title-box").style.cursor = "move";
+      });
+    }
+
+    disableEditing();
+
+    editBtn.addEventListener("click", () => {
+      editMode = !editMode;
+      if (editMode) {
+        editBtn.textContent = "✅ Zapisz układ";
+        enableEditing();
+      } else {
+        editBtn.textContent = "✏️ Edytor";
+        disableEditing();
+        saveLayout();
+      }
+    });
+
+    windows.forEach(win => {
+      const title = win.querySelector(".title-box");
+      let offsetX, offsetY, dragging = false;
+
+      title.addEventListener("mousedown", e => {
+        if (!editMode) return;
+        dragging = true;
+        offsetX = e.clientX - win.offsetLeft;
+        offsetY = e.clientY - win.offsetTop;
+        win.style.opacity = "0.85";
+      });
+
+      document.addEventListener("mouseup", () => {
+        dragging = false;
+        windows.forEach(w => (w.style.opacity = "1"));
+      });
+
+      document.addEventListener("mousemove", e => {
+        if (dragging && editMode) {
+          win.style.left = (e.clientX - offsetX) + "px";
+          win.style.top = (e.clientY - offsetY) + "px";
+        }
+      });
+    });
+
+    function saveLayout() {
+      const layout = {};
+      windows.forEach(win => {
+        layout[win.id] = {
+          left: win.style.left,
+          top: win.style.top,
+          width: win.style.width,
+          height: win.style.height
+        };
+      });
+      localStorage.setItem("imsosorryLayout", JSON.stringify(layout));
+    }
+
+    window.addEventListener("load", () => {
+      const saved = localStorage.getItem("imsosorryLayout");
+      if (saved) {
+        const layout = JSON.parse(saved);
+        for (let id in layout) {
+          const win = document.getElementById(id);
+          if (win && layout[id]) {
+            win.style.left = layout[id].left;
+            win.style.top = layout[id].top;
+            win.style.width = layout[id].width;
+            win.style.height = layout[id].height;
+          }
+        }
+      }
+    });
+  </script></body>
+</html>
